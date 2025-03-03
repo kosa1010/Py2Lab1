@@ -178,3 +178,99 @@ my_project/
 4. Zainstaluj w nim pakiet `pandas`.
 5. Wyeksportuj środowisko do pliku `environment.yml`.
 6. Usuń całe środowisko i odtwórz je na nowo z pliku `environment.yml`.
+
+# Dekoratory i generatory w Pythonie
+
+## 1. Wprowadzenie
+Dekoratory i generatory to zaawansowane mechanizmy w Pythonie, które ułatwiają pisanie eleganckiego i efektywnego kodu. 
+
+- **Dekoratory** pozwalają na modyfikację funkcji lub metod bez konieczności ich zmieniania.
+- **Generatory** to specjalne funkcje, które pozwalają na leniwe generowanie wartości, co jest szczególnie przydatne przy pracy z dużymi zbiorami danych.
+
+## 2. Dekoratory w Pythonie
+### 2.1 Czym są dekoratory?
+Dekoratory to funkcje, które modyfikują inne funkcje. Są one często używane do logowania, kontroli dostępu, mierzenia czasu wykonania i innych operacji.
+
+### 2.2 Tworzenie dekoratora
+Przykładowy dekorator, który loguje wywołanie funkcji:
+```python
+import time
+
+def logger(func):
+    def wrapper(*args, **kwargs):
+        print(f"Wywołano funkcję {func.__name__} z argumentami {args}, {kwargs}")
+        result = func(*args, **kwargs)
+        print(f"Funkcja {func.__name__} zwróciła {result}")
+        return result
+    return wrapper
+
+@logger
+def add(a, b):
+    return a + b
+
+add(2, 3)
+```
+
+### 2.3 Dekoratory z parametrami
+Dekorator może przyjmować argumenty, np. dekorator mierzący czas wykonania funkcji:
+```python
+def time_it(repeat=1):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            for _ in range(repeat):
+                result = func(*args, **kwargs)
+            end = time.time()
+            print(f"Czas wykonania: {end - start:.4f} sekundy")
+            return result
+        return wrapper
+    return decorator
+
+@time_it(repeat=3)
+def slow_function():
+    time.sleep(1)
+    print("Gotowe!")
+
+slow_function()
+```
+
+## 3. Generatory w Pythonie
+### 3.1 Czym są generatory?
+Generatory to funkcje, które zwracają iteratory. Zamiast `return`, używają `yield` do zwracania wartości i zachowują swój stan między wywołaniami.
+
+### 3.2 Tworzenie generatora
+Przykładowy generator liczb Fibonacciego:
+```python
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+for num in fibonacci(10):
+    print(num)
+```
+
+### 3.3 Generatory vs zwykłe listy
+Porównanie generatora i listy przy dużych zbiorach danych:
+```python
+# Lista zajmuje dużo pamięci
+numbers = [x**2 for x in range(10**6)]
+
+# Generator zużywa mniej pamięci
+numbers_gen = (x**2 for x in range(10**6))
+```
+
+## 4. Podsumowanie
+- **Dekoratory** pozwalają na modyfikację funkcji w elegancki sposób.
+- **Generatory** pozwalają na oszczędność pamięci i lepszą wydajność przy pracy z dużymi zbiorami danych.
+
+## 5. Zadania do wykonania
+### Zadanie 1: Dekoratory
+1. Napisz dekorator `timer`, który mierzy czas wykonania funkcji.
+2. Użyj go do zmierzenia czasu wykonania funkcji sortującej listę.
+
+### Zadanie 2: Generatory
+1. Napisz generator zwracający liczby pierwsze.
+2. Napisz generator, który generuje nieskończony ciąg liczb parzystych.
+
